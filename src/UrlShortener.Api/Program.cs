@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
+using UrlShortener.Domain.Entities;
 using UrlShortener.Infrastructure.Data;
 
 
@@ -13,6 +15,13 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<UrlShortenerDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+var options = new DbContextOptionsBuilder<UrlShortenerDbContext>()
+    .UseSqlServer("Server=localhost,1433;Database=UrlShortener;User Id=SA;Password='gr33nWichUrlshort3ner@!23';TrustServerCertificate=True")
+    .Options;
+
+using var context = new UrlShortenerDbContext(options);
+Console.WriteLine("Can connect? " + context.Database.CanConnect());
 
 var app = builder.Build();
 

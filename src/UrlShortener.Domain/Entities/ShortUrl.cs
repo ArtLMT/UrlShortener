@@ -16,5 +16,25 @@ namespace UrlShortener.Domain.Entities
         public DateTime? ExpiryDate { get; set; }
         public int ClickCount { get; set; }
         public User? User { get; set; }
+
+        public ShortUrl(int id, string originalUrl, string shortCode, int? userId, DateTime createdAt, DateTime? expiryDate, int clickCount, User? user)
+        {
+            if (string.IsNullOrWhiteSpace(originalUrl))
+            {
+                throw new ArgumentException("Original URL is required.");
+            }
+            if (string.IsNullOrWhiteSpace(shortCode) || shortCode.Length < 6)
+                throw new ArgumentException("Short code must be at least 6 characters.");
+
+
+            Id = id;
+            OriginalUrl = originalUrl;
+            ShortCode = shortCode;
+            UserId = userId;
+            CreatedAt = createdAt;
+            ExpiryDate = expiryDate;
+            ClickCount = clickCount;
+            User = user;
+        }
     }
 }

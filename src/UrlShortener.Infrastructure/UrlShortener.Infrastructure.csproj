@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
     <Folder Include="Cache\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\UrlShortener.Application\UrlShortener.Application.csproj" />
     <ProjectReference Include="..\UrlShortener.Domain\UrlShortener.Domain.csproj" />
   </ItemGroup>
 

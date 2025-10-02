@@ -1,6 +1,15 @@
-﻿namespace UrlShortener.Api.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace UrlShortener.Api.Controllers
 {
-    public class UrlController
+    [ApiController]
+    [Route("api/v1/urls")]
+    public class UrlController : ControllerBase
     {
+        [HttpGet]
+        public string GetUrl()
+        {
+            return "test";
+        }
     }
 }

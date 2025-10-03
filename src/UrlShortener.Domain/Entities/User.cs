@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UrlShortener.Domain.Common.Enums;
 
 namespace UrlShortener.Domain.Entities
 {
@@ -13,6 +14,7 @@ namespace UrlShortener.Domain.Entities
         public string Password { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string? Phone { get; set; } = string.Empty;
+        public UserStatus? Status {  get; set; } = UserStatus.ACTIVE;
         public ICollection<ShortUrl> ShortUrls { get; set; } = new List<ShortUrl>();
     }
 }

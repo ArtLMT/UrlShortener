@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UrlShortener.Domain.Common.Enums;
 
 namespace UrlShortener.Domain.Entities
 {
@@ -15,6 +16,7 @@ namespace UrlShortener.Domain.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? ExpiryDate { get; set; }
         public int ClickCount { get; set; }
+        public UrlStatus? Status { get; set; } = UrlStatus.ACTIVE;
         public User? User { get; set; }
 
         //public ShortUrl(int id, string originalUrl, string shortCode, int? userId, DateTime createdAt, DateTime? expiryDate, int clickCount, User? user)

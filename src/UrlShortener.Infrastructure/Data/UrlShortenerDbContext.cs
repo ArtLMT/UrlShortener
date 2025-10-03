@@ -18,8 +18,8 @@ namespace UrlShortener.Infrastructure.Data
 
         }
 
-        public DbSet<ShortUrl> ShortUrls { get; set; } = null!;
-        //public DbSet<User> Users { get; set; } = null!;
+        public DbSet<ShortUrl> ShortUrls { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,7 +38,7 @@ namespace UrlShortener.Infrastructure.Data
 
                 entity.Property(s => s.OriginalUrl)
                       .IsRequired()
-                      .HasMaxLength(2048); // long enough for most URLs
+                      .HasMaxLength(MaxLengthConfig.ORIGINAL_URL); // long enough for most URLs
 
                 entity.Property(s => s.ShortCode)
                       .IsRequired()
@@ -57,11 +57,41 @@ namespace UrlShortener.Infrastructure.Data
                 entity.Property(s => s.ClickCount)
                       .HasDefaultValue(0);
 
+                entity.Property(s => s.Status)
+                      .HasConversion<string>()
+                      .HasMaxLength(20)
+                      .IsRequired();
+
+
                 // relationships
                 entity.HasOne(s => s.User)
                       .WithMany(u => u.ShortUrls) // assuming User has ICollection<ShortUrl>
                       .HasForeignKey(s => s.UserId)
                       .OnDelete(DeleteBehavior.SetNull); // if user is deleted, keep short url
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("User");
+                entity.HasKey(u => u.Id);
+                entity.Property(u => u.Id).ValueGeneratedOnAdd();
+
+                entity.Property(u => u.Username)
+                      .IsRequired()
+                      .HasMaxLength(MaxLengthConfig.USERNAME_MAXLENGTH);
+                entity.Property(u => u.Email)
+                      .IsRequired()
+                      .HasMaxLength(MaxLengthConfig.EMAIL_MAXLENGTH);
+                entity.Property(u => u.Password)
+                      .IsRequired()
+                      .HasMaxLength(MaxLengthConfig.PASSWORD_MAXLENGTH);
+
+                entity.Property(u => u.Phone)
+                      .HasMaxLength(MaxLengthConfig.PHONE_NUMBER_MAXLENGTH);
+                entity.Property(u => u.Status)
+                      .HasConversion<string>()
+                      .HasMaxLength(20)
+                      .IsRequired(false);
             });
         }
        

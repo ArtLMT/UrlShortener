@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UrlShortener.Application.Interfaces.Repositories;
+using UrlShortener.Domain.Common.Enums;
 using UrlShortener.Domain.Entities;
 using UrlShortener.Infrastructure.Data;
 
@@ -28,7 +29,7 @@ namespace UrlShortener.Infrastructure.Repositories
             var entity = await _context.ShortUrls.FindAsync(id);
             if (entity != null)
             {
-                _context.ShortUrls.Remove(entity);
+                entity.Status = UrlStatus.DELETED;
                 await _context.SaveChangesAsync();
             }
         }
@@ -37,14 +38,14 @@ namespace UrlShortener.Infrastructure.Repositories
         {
             return await _context.ShortUrls
                 .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.ShortCode == shortCode);
+                .FirstOrDefaultAsync(u => u.ShortCode == shortCode && u.Status == UrlStatus.ACTIVE);
         }
 
         public async Task<ShortUrl?> GetByIdAsync(int id)
         {
             return await _context.ShortUrls
                 .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == id);
+                .FirstOrDefaultAsync(u => u.Id == id && u.Status == UrlStatus.ACTIVE);
         }
     }
 }

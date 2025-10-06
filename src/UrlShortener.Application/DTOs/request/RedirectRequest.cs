@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace UrlShortener.Application.DTOs.request
 {
-    internal class UrlCreateRequest
+    public class RedirectRequest
     {
+        public string shortCode { get; set; } = string.Empty;
     }
 }

@@ -4,21 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UrlShortener.Domain.Entities;
 
 namespace UrlShortener.Application.DTOs.response
 {
-    public class ShortUrlResponse
+    public class RedirectResponse
     {
-        [Required]
-        public string shortCode { get; set; } 
-
-        // Note: Cai nay co can tra ve kh, luu vo db la xong r ma nhi..
         [Required]
         [Url]
         public string originalUrl { get; set; } = string.Empty;
-
-        [Required]
-        public int id { get; set; }
     }
 }

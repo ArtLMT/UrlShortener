@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UrlShortener.Application.Exceptions
+namespace UrlShortener.Application.Interfaces.Services
 {
-    internal class GlobalHandlerException
+    public interface IJwtTokenService
     {
+
     }
 }

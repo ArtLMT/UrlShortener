@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -7,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using UrlShortener.Domain.Common;
 using UrlShortener.Domain.Entities;
+using UrlShortener.Infrastructure.Identity.Entities;
 
 namespace UrlShortener.Infrastructure.Data
 {
-    public class UrlShortenerDbContext : DbContext
+    public class UrlShortenerDbContext : IdentityDbContext<ApplicationUser>
     {
         public UrlShortenerDbContext(DbContextOptions<UrlShortenerDbContext> options)
             : base(options)
@@ -19,7 +21,7 @@ namespace UrlShortener.Infrastructure.Data
         }
 
         public DbSet<ShortUrl> ShortUrls { get; set; }
-        public DbSet<User> Users { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

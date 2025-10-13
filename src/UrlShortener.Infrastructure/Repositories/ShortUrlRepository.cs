@@ -15,6 +15,11 @@ namespace UrlShortener.Infrastructure.Repositories
     {
         private readonly UrlShortenerDbContext _context;
 
+        public ShortUrlRepository(UrlShortenerDbContext context)
+        {
+            _context = context;
+        }
+
         public async Task<ShortUrl> AddAsync(ShortUrl shortUrl)
         {
             // Track entity and add to DbContext
@@ -46,6 +51,21 @@ namespace UrlShortener.Infrastructure.Repositories
             return await _context.ShortUrls
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == id && u.Status == UrlStatus.ACTIVE);
+        }
+
+        public async Task<ShortUrl?> GetByOriginalUrlAsync(string originalUrl)
+        {
+            return await _context.ShortUrls
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.OriginalUrl == originalUrl && u.Status == UrlStatus.ACTIVE);
+        }
+
+        public async Task<List<ShortUrl>> GetByUserIdAsync(string userId)
+        {
+            return await _context.ShortUrls
+                .AsNoTracking()
+                .Where(u => u.UserId == userId && u.Status == UrlStatus.ACTIVE)
+                .ToListAsync();
         }
     }
 }

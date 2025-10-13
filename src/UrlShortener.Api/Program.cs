@@ -23,6 +23,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<UrlShortenerDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<UrlShortenerDbContext>()
     .AddDefaultTokenProviders();

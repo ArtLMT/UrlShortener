@@ -8,7 +8,10 @@ namespace UrlShortener.Application.DTOs.request
 {
     public class LoginRequest
     {
+        /// <example>123@gmail.com</example>
         public string Email { get; set; }
+
+        /// <example>Thanh1@</example>
         public string Password { get; set; }
     }
 }

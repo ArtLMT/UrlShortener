@@ -56,7 +56,17 @@ namespace UrlShortener.Application.Services
             };
 
             var result = await _userManager.CreateAsync(user, request.Password);
-            if (!result.Succeeded) return null;
+            if (!result.Succeeded)
+            {
+                // 1. Lấy tất cả các mô tả lỗi từ result.Errors
+                var errorMessages = result.Errors.Select(e => e.Description);
+
+                // 2. Nối chúng lại thành một chuỗi duy nhất
+                var fullErrorMessage = string.Join(" | ", errorMessages);
+
+                throw new RegisterException($"Register failed! Reasons: {fullErrorMessage}");
+            }
+
 
             return new LoginResponse
             {

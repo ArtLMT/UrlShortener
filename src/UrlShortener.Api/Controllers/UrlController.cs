@@ -6,7 +6,6 @@ using UrlShortener.Domain.Entities;
 
 namespace UrlShortener.Api.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/v1/urls")]
     public class UrlController : ControllerBase
@@ -19,6 +18,7 @@ namespace UrlShortener.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public string GetUrl()
         {
             return "test";
@@ -34,7 +34,7 @@ namespace UrlShortener.Api.Controllers
                 Ok(new BaseResponse<ShortUrlResponse>(200, "Success"));
             }
 
-            return Ok(new BaseResponse<ShortUrlResponse>(200, "Success", shortResponse));
+            return Ok(new BaseResponse<ShortUrlResponse>(200, "Success", null));
         }
 
 

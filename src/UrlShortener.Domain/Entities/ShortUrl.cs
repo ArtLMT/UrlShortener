@@ -16,7 +16,6 @@ namespace UrlShortener.Domain.Entities
         public string? UserId { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? ExpiryDate { get; set; }
-        public int ClickCount { get; set; }
         public UrlStatus? Status { get; set; } = UrlStatus.ACTIVE;
         public ApplicationUser? User { get; set; }
 

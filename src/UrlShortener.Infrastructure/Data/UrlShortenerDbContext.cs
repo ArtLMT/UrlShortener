@@ -56,9 +56,6 @@ namespace UrlShortener.Infrastructure.Data
                 entity.Property(s => s.ExpiryDate)
                       .IsRequired(false);
 
-                entity.Property(s => s.ClickCount)
-                      .HasDefaultValue(0);
-
                 entity.Property(s => s.Status)
                       .HasConversion<string>()
                       .HasMaxLength(20)

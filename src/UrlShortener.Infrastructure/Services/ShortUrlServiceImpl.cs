@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using UrlShortener.Application.DTOs.request;
@@ -65,10 +66,13 @@ namespace UrlShortener.Infrastructure.Services
                 OriginalUrl = request.originalUrl,
                 ShortCode = shortCode,
                 CreatedAt = DateTime.UtcNow,
-                ClickCount = 0,
                 UserId = id
 
             };
+
+
+
+
 
             var ShortUrlEntity = await _repo.AddAsync(shortUrl);
 

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace UrlShortener.Application.DTOs.response
 {
-    public class LoginResponse
+    public class UserInfoResponseDto
     {
-        public TokenPayLoad token { get; set; }
+        public string Id { get; set; }
+        public string Email { get; set; }
     }
 }

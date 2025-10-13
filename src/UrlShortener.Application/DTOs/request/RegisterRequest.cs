@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace UrlShortener.Application.DTOs.request
 {
-    internal class RegisterRequest
+    public class RegisterRequest
     {
+        public string Email { get; set; } = default!;
+        public string Password { get; set; } = default!;
     }
 }

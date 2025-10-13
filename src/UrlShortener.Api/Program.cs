@@ -1,8 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Text;
+using UrlShortener.Api.Middlewares;
+using UrlShortener.Application.Interfaces.Services;
+using UrlShortener.Application.Services;
 using UrlShortener.Domain.Entities;
 using UrlShortener.Infrastructure.Data;
+using UrlShortener.Infrastructure.Identity.Entities;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,13 +19,33 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<UrlShortenerDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<UrlShortenerDbContext>()
+    .AddDefaultTokenProviders();
 
-//var options = new DbContextOptionsBuilder<UrlShortenerDbContext>()
-//    .UseSqlServer("Server=localhost,1433;Database=UrlShortener;User Id=SA;Password='gr33nWichUrlshort3ner@!23';TrustServerCertificate=True")
-//    .Options;
+// JWT Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+    };
+});
+builder.Services.AddAuthorization();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
 
-//using var context = new UrlShortenerDbContext(options);
-//Console.WriteLine("Can connect? " + context.Database.CanConnect());
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -43,6 +71,8 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
+app.UseMiddleware<GlobalExceptionMiddleware>();
+app.UseHttpsRedirection();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -54,8 +84,12 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = "swagger"; 
     });
 }
-app.UseHttpsRedirection();
+
+
+
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
@@ -87,7 +121,12 @@ app.Run();
 //.WithName("GetWeatherForecast")
 //.WithOpenApi();
 
+//var options = new DbContextOptionsBuilder<UrlShortenerDbContext>()
+//    .UseSqlServer("Server=localhost,1433;Database=UrlShortener;User Id=SA;Password='gr33nWichUrlshort3ner@!23';TrustServerCertificate=True")
+//    .Options;
 
+//using var context = new UrlShortenerDbContext(options);
+//Console.WriteLine("Can connect? " + context.Database.CanConnect());
 
 
 

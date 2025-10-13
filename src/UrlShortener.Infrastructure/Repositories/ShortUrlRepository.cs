@@ -47,5 +47,12 @@ namespace UrlShortener.Infrastructure.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == id && u.Status == UrlStatus.ACTIVE);
         }
+
+        public async Task<ShortUrl?> GetByOriginalUrlAsync(string originalUrl)
+        {
+            return await _context.ShortUrls
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.OriginalUrl == originalUrl && u.Status == UrlStatus.ACTIVE);
+        }
     }
 }

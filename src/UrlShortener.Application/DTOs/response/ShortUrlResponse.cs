@@ -11,9 +11,8 @@ namespace UrlShortener.Application.DTOs.response
     public class ShortUrlResponse
     {
         [Required]
-        public string shortCode { get; set; } 
+        public ShortUrl shortUrl { get; set; }
 
-        // Note: Cai nay co can tra ve kh, luu vo db la xong r ma nhi..
         [Required]
         [Url]
         public string originalUrl { get; set; } = string.Empty;

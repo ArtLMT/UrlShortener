@@ -72,29 +72,29 @@ namespace UrlShortener.Infrastructure.Data
                       .OnDelete(DeleteBehavior.SetNull); // if user is deleted, keep short url
             });
 
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.ToTable("User");
-                entity.HasKey(u => u.Id);
-                entity.Property(u => u.Id).ValueGeneratedOnAdd();
+            //modelBuilder.Entity<User>(entity =>
+            //{
+            //    entity.ToTable("User");
+            //    entity.HasKey(u => u.Id);
+            //    entity.Property(u => u.Id).ValueGeneratedOnAdd();
 
-                entity.Property(u => u.Username)
-                      .IsRequired()
-                      .HasMaxLength(MaxLengthConfig.USERNAME_MAXLENGTH);
-                entity.Property(u => u.Email)
-                      .IsRequired()
-                      .HasMaxLength(MaxLengthConfig.EMAIL_MAXLENGTH);
-                entity.Property(u => u.Password)
-                      .IsRequired()
-                      .HasMaxLength(MaxLengthConfig.PASSWORD_MAXLENGTH);
+            //    entity.Property(u => u.Username)
+            //          .IsRequired()
+            //          .HasMaxLength(MaxLengthConfig.USERNAME_MAXLENGTH);
+            //    entity.Property(u => u.Email)
+            //          .IsRequired()
+            //          .HasMaxLength(MaxLengthConfig.EMAIL_MAXLENGTH);
+            //    entity.Property(u => u.Password)
+            //          .IsRequired()
+            //          .HasMaxLength(MaxLengthConfig.PASSWORD_MAXLENGTH);
 
-                entity.Property(u => u.Phone)
-                      .HasMaxLength(MaxLengthConfig.PHONE_NUMBER_MAXLENGTH);
-                entity.Property(u => u.Status)
-                      .HasConversion<string>()
-                      .HasMaxLength(20)
-                      .IsRequired(false);
-            });
+            //    entity.Property(u => u.Phone)
+            //          .HasMaxLength(MaxLengthConfig.PHONE_NUMBER_MAXLENGTH);
+            //    entity.Property(u => u.Status)
+            //          .HasConversion<string>()
+            //          .HasMaxLength(20)
+            //          .IsRequired(false);
+            //});
         }
        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

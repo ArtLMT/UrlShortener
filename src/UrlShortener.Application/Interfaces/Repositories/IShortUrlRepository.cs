@@ -15,5 +15,6 @@ namespace UrlShortener.Application.Interfaces.Repositories
         Task<ShortUrl?> GetByIdAsync(int id);
 
         Task<ShortUrl?> GetByOriginalUrlAsync(string originalUrl);
+        Task<List<ShortUrl>> GetByUserIdAsync(string userId);
     }
 }

@@ -34,6 +34,11 @@ namespace UrlShortener.Infrastructure.Services
             _userManager = user;
         }
 
+        public ShortUrlServiceImpl(IShortUrlRepository repo)
+        {
+            _repo = repo;
+        }
+
         public async Task<ShortUrlResponse> ShortenUrl(ShortUrlRequest request, ClaimsPrincipal user)
         {
 

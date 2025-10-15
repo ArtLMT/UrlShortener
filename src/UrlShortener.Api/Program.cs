@@ -132,6 +132,7 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
+app.UseCors("AllowAll");
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseHttpsRedirection();
 

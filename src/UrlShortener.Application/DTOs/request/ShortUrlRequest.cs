@@ -11,7 +11,7 @@ namespace UrlShortener.Application.DTOs.request
     {
         [Required]
         [Url]
-        public string originalUrl { get; set; } = string.Empty;
+        public string OriginalUrl { get; set; } = string.Empty;
 
         //public int userId { get; set; }
     }

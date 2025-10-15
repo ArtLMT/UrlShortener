@@ -25,7 +25,10 @@ namespace UrlShortener.Infrastructure.Services
         private readonly IShortUrlRepository _repo;
         private readonly UserManager<ApplicationUser> _userManager;
 
-
+        public ShortUrlServiceImpl(IShortUrlRepository repo)
+        {
+            _repo = repo;
+        }
 
         public ShortUrlServiceImpl(IShortUrlRepository repo,
                                     UserManager<ApplicationUser> user)
@@ -46,7 +49,7 @@ namespace UrlShortener.Infrastructure.Services
                 existed = await _repo.GetByCodeAsync(shortCode);
             }
 
-            var RequestOriginalUrl = request.originalUrl;
+            var RequestOriginalUrl = request.OriginalUrl;
 
             var originalUrlAlreadyHadShort = await _repo.GetByOriginalUrlAsync(RequestOriginalUrl);
             if (originalUrlAlreadyHadShort != null)
@@ -63,7 +66,7 @@ namespace UrlShortener.Infrastructure.Services
 
             var shortUrl = new ShortUrl
             {
-                OriginalUrl = request.originalUrl,
+                OriginalUrl = request.OriginalUrl,
                 ShortCode = shortCode,
                 CreatedAt = DateTime.UtcNow,
                 UserId = id
@@ -93,6 +96,10 @@ namespace UrlShortener.Infrastructure.Services
 
         public async Task<ShortUrlResponse> GetOriginalUrl(string shortCode)
         {
+            if (string.IsNullOrWhiteSpace(shortCode) || shortCode.Length != 6)
+            {
+                throw new BadRequestException("Short code is invalid");
+            }
             var FoundShortUrl = await _repo.GetByCodeAsync(shortCode);
             if (FoundShortUrl == null)
             {

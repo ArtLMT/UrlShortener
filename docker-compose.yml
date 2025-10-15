@@ -10,6 +10,26 @@ services:
       - "1433:1433"
     volumes:
       - db_data:/var/opt/mssql
+    networks:
+      - app_network
+  api:
+    build:
+      context: ./src
+      dockerfile: UrlShortener.Api/Dockerfile
+    container_name: urlshortener_api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=db;Database=UrlShortener;User Id=sa;Password=gr33nWichUrlshort3ner@!23;TrustServerCertificate=True;
+    networks:
+      - app_network
 
 volumes:
   db_data:
+
+networks:
+  app_network:

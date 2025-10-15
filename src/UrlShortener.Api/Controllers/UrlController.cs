@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using UrlShortener.Application.DTOs.request;
 using UrlShortener.Application.DTOs.response;
+using UrlShortener.Application.Exceptions;
 using UrlShortener.Application.Interfaces.Services;
 using UrlShortener.Domain.Entities;
 
@@ -46,7 +47,12 @@ namespace UrlShortener.Api.Controllers
         [HttpGet("/Lists")] 
         public async Task<ActionResult<BaseResponse<List<ShortUrlResponse>>>> GetShortUrls() 
         {
-            var shortUrls = await _shortUrlService.GetShortUrls(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                throw new UnauthorizedException("You must login before get list urls");
+            }
+            var shortUrls = await _shortUrlService.GetShortUrls(userId!);
 
             if (shortUrls == null)
                 return Fail<List<ShortUrlResponse>>("Fail to get", 400);

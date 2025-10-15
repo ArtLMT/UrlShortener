@@ -36,8 +36,8 @@ namespace UrlShortener.Tests.Infrastructure
         {
             // Arrange
             var request = new ShortUrlRequest { OriginalUrl = "https://google.com" };
-            _mockRepo.Setup(r => r.GetByOriginalUrlAsync(It.IsAny<string>())).ReturnsAsync((ShortUrl)null);
-            _mockRepo.Setup(r => r.GetByCodeAsync(It.IsAny<string>())).ReturnsAsync((ShortUrl)null);
+            _mockRepo.Setup(r => r.GetByOriginalUrlAsync(It.IsAny<string>())).ReturnsAsync((ShortUrl)null!);
+            _mockRepo.Setup(r => r.GetByCodeAsync(It.IsAny<string>())).ReturnsAsync((ShortUrl)null!);
             _mockRepo.Setup(r => r.AddAsync(It.IsAny<ShortUrl>())).ReturnsAsync((ShortUrl s) => s);
 
             // Act
@@ -80,7 +80,7 @@ namespace UrlShortener.Tests.Infrastructure
         {
             // Arrange
             _mockRepo.Setup(r => r.GetByCodeAsync("abc123"))
-                     .ReturnsAsync((ShortUrl)null);
+                     .ReturnsAsync((ShortUrl)null!);
 
             // Act & Assert
             await Assert.ThrowsAsync<NotFoundException>(() => _service.GetOriginalUrl("abc123"));

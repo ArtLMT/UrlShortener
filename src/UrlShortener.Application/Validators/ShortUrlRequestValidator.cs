@@ -12,7 +12,7 @@ namespace UrlShortener.Application.Validators
     {
         public ShortUrlRequestValidator()
         {
-            RuleFor(x => x.originalUrl)
+            RuleFor(x => x.OriginalUrl)
                 .NotEmpty().WithMessage("Original URL is required.");
                 //.Must(uri => Uri.IsWellFormedUriString(uri, UriKind.Absolute)).WithMessage("Invalid URL format.");
         }

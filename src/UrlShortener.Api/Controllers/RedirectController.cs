@@ -23,7 +23,7 @@ namespace UrlShortener.Api.Controllers
                 return NotFound("Failed to fetch original url from service");
 
             var originalUrl = result.OriginalUrl;
-            if (String.IsNullOrEmpty(originalUrl))
+            if (string.IsNullOrEmpty(originalUrl))
                 return NotFound("Original url not found");
 
             return Redirect(originalUrl);

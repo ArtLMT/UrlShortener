@@ -9,6 +9,7 @@ using UrlShortener.Domain.Entities;
 
 namespace UrlShortener.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/urls")]
     public class UrlController : BaseApiController
@@ -21,7 +22,6 @@ namespace UrlShortener.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<BaseResponse<ShortUrlResponse>>> GetByShortCode(string shortCode)
         {
             var foundUrlEntity = await _shortUrlService.GetOriginalUrl(shortCode);
@@ -30,7 +30,6 @@ namespace UrlShortener.Api.Controllers
 
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<BaseResponse<ShortUrlResponse>>> CreateShortUrl(ShortUrlRequest request)
         {
@@ -44,7 +43,6 @@ namespace UrlShortener.Api.Controllers
  
         }
 
-        [Authorize]
         [HttpGet("/Lists")] 
         public async Task<ActionResult<BaseResponse<List<ShortUrlResponse>>>> GetShortUrls() 
         {
@@ -56,6 +54,16 @@ namespace UrlShortener.Api.Controllers
             return Success<List<ShortUrlResponse>>(shortUrls, "Sucess");
         }
 
+        [HttpGet("/Lists/v2")]
+        public async Task<ActionResult<BaseResponse<List<ShortUrlResponse>>>> GetShortUrlsV2()
+        {
+            var shortUrls = await _shortUrlService.GetShortUrlsV2();
+
+            if (shortUrls == null)
+                return Fail<List<ShortUrlResponse>>("Fail to get", 400);
+
+            return Success<List<ShortUrlResponse>>(shortUrls, "Sucess");
+        }
 
     }
 }

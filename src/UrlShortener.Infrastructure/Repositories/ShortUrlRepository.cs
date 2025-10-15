@@ -67,5 +67,13 @@ namespace UrlShortener.Infrastructure.Repositories
                 .Where(u => u.UserId == userId && u.Status == UrlStatus.ACTIVE)
                 .ToListAsync();
         }
+
+        public async Task<List<ShortUrl>> GetShortUrlsAsync()
+        {
+            return await _context.ShortUrls
+                .AsNoTracking()
+                .Where(u => u.Status == UrlStatus.ACTIVE)
+                .ToListAsync();
+        }
     }
 }

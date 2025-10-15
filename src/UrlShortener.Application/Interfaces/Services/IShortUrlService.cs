@@ -17,6 +17,8 @@ namespace UrlShortener.Application.Interfaces.Services
 
         Task<List<ShortUrlResponse>> GetShortUrls(string userId);
 
+        Task<List<ShortUrlResponse>> GetShortUrlsV2();
+
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.DataProtection.Repositories;
+﻿using Azure;
+using Microsoft.AspNetCore.DataProtection.Repositories;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ namespace UrlShortener.Tests.Infrastructure
             _mockRepo.Setup(r => r.AddAsync(It.IsAny<ShortUrl>())).ReturnsAsync((ShortUrl s) => s);
 
             // Act
-            var response = await _service.ShortenUrl(request, _mockUser);
+            var response = await _service.ShortenUrl(request, _mockUser, "http//test/");
 
             // Assert
             Assert.NotNull(response);
@@ -65,7 +66,7 @@ namespace UrlShortener.Tests.Infrastructure
                      .ReturnsAsync(shortUrlEntity);
 
             // Act
-            var response = await _service.GetOriginalUrl("abc123");
+            var response = await _service.GetOriginalUrl("abc123", "http//test/");
 
             // Assert
             Assert.NotNull(response);
@@ -83,7 +84,7 @@ namespace UrlShortener.Tests.Infrastructure
                      .ReturnsAsync((ShortUrl)null!);
 
             // Act & Assert
-            await Assert.ThrowsAsync<NotFoundException>(() => _service.GetOriginalUrl("abc123"));
+            await Assert.ThrowsAsync<NotFoundException>(() => _service.GetOriginalUrl("abc123", "http//test/"));
 
             _mockRepo.Verify(r => r.GetByCodeAsync("abc123"), Times.Once);
         }
@@ -95,23 +96,44 @@ namespace UrlShortener.Tests.Infrastructure
 
             // Act & Assert
             await Assert.ThrowsAsync<BadRequestException>(
-                () => _service.GetOriginalUrl(invalidShortCode)
+                () => _service.GetOriginalUrl(invalidShortCode, "http//test/")
             );
         }
 
         [Fact]
-        public async Task ShortenUrl_DuplicateOriginalUrl_ThrowsException()
+        public async Task ShortenUrl_DuplicateOriginalUrl_ReturnsExistingShortUrl()
         {
             // Arrange
-            var existing = new ShortUrl { ShortCode = "abc123", OriginalUrl = "https://google.com" };
-            _mockRepo.Setup(r => r.GetByOriginalUrlAsync(It.IsAny<string>())).ReturnsAsync(existing);
+            var existingShortUrl = new ShortUrl
+            {
+                ShortCode = "abc123",
+                OriginalUrl = "https://google.com",
+                UserId = "user123"
+            };
+
+            var mockUser = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+        new Claim(ClaimTypes.NameIdentifier, "user123")
+            }, "mock"));
+
+            _mockRepo.Setup(r => r.GetByOriginalUrlAsync("https://google.com"))
+                     .ReturnsAsync(existingShortUrl);
+
             var request = new ShortUrlRequest { OriginalUrl = "https://google.com" };
 
-            // Act & Assert
-            await Assert.ThrowsAsync<DuplicateShortCodeException>(
-                () => _service.ShortenUrl(request, _mockUser)
-            );
+            // Act
+            var response = await _service.ShortenUrl(request, mockUser, "http//test/");
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.Equal("abc123", response.ShortCode);
+            Assert.Equal("https://google.com", response.OriginalUrl);
+            Assert.Equal("user123", response.UserId);
+
+            // Verify that no new record was created
+            _mockRepo.Verify(r => r.AddAsync(It.IsAny<ShortUrl>()), Times.Never);
         }
+
     }
 
 }

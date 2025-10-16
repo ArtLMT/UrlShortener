@@ -14,8 +14,6 @@ using UrlShortener.Domain.Entities;
 using UrlShortener.Infrastructure.Identity.Entities;
 using UrlShortener.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-
 
 
 namespace UrlShortener.Infrastructure.Services
@@ -34,11 +32,11 @@ namespace UrlShortener.Infrastructure.Services
         public ShortUrlServiceImpl(IShortUrlRepository repo,
                                     UserManager<ApplicationUser> user)
         {
-            _repo = repo; 
+            _repo = repo;
             _userManager = user;
         }
 
-      
+
 
         public async Task<ShortUrlResponse> ShortenUrl(ShortUrlRequest request, ClaimsPrincipal user, string baseURl)
         {
@@ -57,7 +55,8 @@ namespace UrlShortener.Infrastructure.Services
             var originalUrlAlreadyHadShort = await _repo.GetByOriginalUrlAsync(RequestOriginalUrl);
             if (originalUrlAlreadyHadShort != null)
             {
-                throw new DuplicateShortCodeException(originalUrlAlreadyHadShort.ShortCode);
+                //throw new DuplicateShortCodeException(originalUrlAlreadyHadShort.ShortCode);
+                return CreateResponse(originalUrlAlreadyHadShort, baseURl);
             }
 
             var id = user.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -75,10 +74,6 @@ namespace UrlShortener.Infrastructure.Services
                 UserId = id
 
             };
-
-
-
-
 
             var ShortUrlEntity = await _repo.AddAsync(shortUrl);
 

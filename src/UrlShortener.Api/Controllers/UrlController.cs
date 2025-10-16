@@ -17,22 +17,21 @@ namespace UrlShortener.Api.Controllers
     {
         private readonly IShortUrlService _shortUrlService;
 
+        private string GetBaseUrl()
+        {
+            var request = HttpContext.Request;
+            return $"{request.Scheme}://{request.Host}";
+        }
+
         public UrlController(IShortUrlService shortUrlService)
         {
-            
             _shortUrlService = shortUrlService;
-            
-
         }
 
         [HttpGet]
         public async Task<ActionResult<BaseResponse<ShortUrlResponse>>> GetByShortCode(string shortCode)
         {
-            var requestGPT = HttpContext.Request;
-
-            var baseUrl = $"{requestGPT.Scheme}://{requestGPT.Host}";
-
-            var foundUrlEntity = await _shortUrlService.GetOriginalUrl(shortCode, baseUrl);
+            var foundUrlEntity = await _shortUrlService.GetOriginalUrl(shortCode, GetBaseUrl());
 
             return Success<ShortUrlResponse>(foundUrlEntity, "Success");
 
@@ -41,13 +40,7 @@ namespace UrlShortener.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<BaseResponse<ShortUrlResponse>>> CreateShortUrl(ShortUrlRequest request)
         {
-            var requestGPT = HttpContext.Request;
-
-            var baseUrl = $"{requestGPT.Scheme}://{requestGPT.Host}";
-
-            var shortResponse = await _shortUrlService.ShortenUrl(request, User, baseUrl);
-
-           
+            var shortResponse = await _shortUrlService.ShortenUrl(request, User, GetBaseUrl());        
 
             if (shortResponse == null)
                 return Fail<ShortUrlResponse>("Fail to create", 400);
@@ -59,16 +52,12 @@ namespace UrlShortener.Api.Controllers
         [HttpGet("/Lists")] 
         public async Task<ActionResult<BaseResponse<List<ShortUrlResponse>>>> GetShortUrls() 
         {
-            var requestGPT = HttpContext.Request;
-
-            var baseUrl = $"{requestGPT.Scheme}://{requestGPT.Host}";
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
             {
                 throw new UnauthorizedException("You must login before get list urls");
             }
-            var shortUrls = await _shortUrlService.GetShortUrls(userId!, baseUrl);
+            var shortUrls = await _shortUrlService.GetShortUrls(userId!, GetBaseUrl());
 
             if (shortUrls == null)
                 return Fail<List<ShortUrlResponse>>("Fail to get", 400);

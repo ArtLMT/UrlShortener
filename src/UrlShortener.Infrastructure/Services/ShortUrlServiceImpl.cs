@@ -122,14 +122,14 @@ namespace UrlShortener.Infrastructure.Services
 
         }
 
-        public async Task<List<ShortUrlResponse>> GetShortUrlsV2()
+        public async Task<List<ShortUrlResponse>> GetShortUrlsV2(string baseUrl)
         {
             var shortUrls = await _repo.GetShortUrlsAsync();
             if (shortUrls == null || !shortUrls.Any())
             {
                 throw new NotFoundException("No short URLs found for the user");
             }
-            var responseList = shortUrls.Select(su => CreateResponse(su)
+            var responseList = shortUrls.Select(su => CreateResponse(su, baseUrl)
                 ).ToList();
 
             return responseList;

@@ -68,7 +68,7 @@ namespace UrlShortener.Api.Controllers
         [HttpGet("/Lists/v2")]
         public async Task<ActionResult<BaseResponse<List<ShortUrlResponse>>>> GetShortUrlsV2()
         {
-            var shortUrls = await _shortUrlService.GetShortUrlsV2();
+            var shortUrls = await _shortUrlService.GetShortUrlsV2(GetBaseUrl());
 
             if (shortUrls == null)
                 return Fail<List<ShortUrlResponse>>("Fail to get", 400);

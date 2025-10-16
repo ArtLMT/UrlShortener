@@ -14,8 +14,8 @@ services:
       - app_network
   api:
     build:
-      context: ./src
-      dockerfile: UrlShortener.Api/Dockerfile
+      context: .
+      dockerfile: src/UrlShortener.Api/Dockerfile
     container_name: urlshortener_api
     ports:
       - "8080:8080"

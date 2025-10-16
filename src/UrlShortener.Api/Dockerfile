@@ -4,21 +4,29 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy các csproj để restore
-COPY ["UrlShortener.Api/UrlShortener.Api.csproj", "UrlShortener.Api/"]
-COPY ["UrlShortener.Infrastructure/UrlShortener.Infrastructure.csproj", "UrlShortener.Infrastructure/"]
-COPY ["UrlShortener.Application/UrlShortener.Application.csproj", "UrlShortener.Application/"]
-COPY ["UrlShortener.Domain/UrlShortener.Domain.csproj", "UrlShortener.Domain/"]
+# Copy solution và csproj để restore
+COPY ["UrlShortener.sln", "./"]
+COPY ["src/UrlShortener.Api/UrlShortener.Api.csproj", "src/UrlShortener.Api/"]
+COPY ["src/UrlShortener.Infrastructure/UrlShortener.Infrastructure.csproj", "src/UrlShortener.Infrastructure/"]
+COPY ["src/UrlShortener.Application/UrlShortener.Application.csproj", "src/UrlShortener.Application/"]
+COPY ["src/UrlShortener.Domain/UrlShortener.Domain.csproj", "src/UrlShortener.Domain/"]
+COPY ["UrlShortener.Tests/UrlShortener.Tests.csproj", "UrlShortener.Tests/"]
 
 # Restore dependencies
-RUN dotnet restore "UrlShortener.Api/UrlShortener.Api.csproj"
+RUN dotnet restore "src/UrlShortener.Api/UrlShortener.Api.csproj"
 
-# Copy full source
-COPY . .
+# Copy toàn bộ source code
+COPY src/ ./src/
+COPY UrlShortener.Tests/ ./UrlShortener.Tests/
 
-# Build & publish
-WORKDIR /src/UrlShortener.Api
-RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
+# Build Web API
+RUN dotnet build "src/UrlShortener.Api/UrlShortener.Api.csproj" -c Release -o /build
+
+# Run tests
+RUN dotnet test "UrlShortener.Tests/UrlShortener.Tests.csproj" --no-build --verbosity normal
+
+# Publish Web API
+RUN dotnet publish "src/UrlShortener.Api/UrlShortener.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # =========================
 # 2️⃣ RUNTIME STAGE
@@ -29,9 +37,7 @@ WORKDIR /app
 # Copy published output
 COPY --from=build /app/publish .
 
-# Expose ports (for HTTP & HTTPS)
 EXPOSE 5000
 EXPOSE 5001
 
-# Run the API
 ENTRYPOINT ["dotnet", "UrlShortener.Api.dll"]

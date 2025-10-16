@@ -24,6 +24,7 @@ namespace UrlShortener.Infrastructure.Services
     {
         private readonly IShortUrlRepository _repo;
         private readonly UserManager<ApplicationUser> _userManager;
+        //private string baseUrl;
 
         public ShortUrlServiceImpl(IShortUrlRepository repo)
         {
@@ -37,7 +38,9 @@ namespace UrlShortener.Infrastructure.Services
             _userManager = user;
         }
 
-        public async Task<ShortUrlResponse> ShortenUrl(ShortUrlRequest request, ClaimsPrincipal user)
+      
+
+        public async Task<ShortUrlResponse> ShortenUrl(ShortUrlRequest request, ClaimsPrincipal user, string baseURl)
         {
 
             var shortCode = Guid.NewGuid().ToString().Substring(0, 6);
@@ -79,22 +82,23 @@ namespace UrlShortener.Infrastructure.Services
 
             var ShortUrlEntity = await _repo.AddAsync(shortUrl);
 
-            return CreateResponse(ShortUrlEntity);
+            return CreateResponse(ShortUrlEntity, baseURl);
         }
 
-        public ShortUrlResponse CreateResponse(ShortUrl ShortUrlEntity)
+        public ShortUrlResponse CreateResponse(ShortUrl ShortUrlEntity, string baseUrl = "")
         {
             var response = new ShortUrlResponse
             {
                 Id = ShortUrlEntity.Id,
                 ShortCode = ShortUrlEntity.ShortCode,
                 OriginalUrl = ShortUrlEntity.OriginalUrl,
-                UserId = ShortUrlEntity.UserId
+                UserId = ShortUrlEntity.UserId,
+                FullUrl = baseUrl + "/" + ShortUrlEntity.ShortCode
             };
             return response;
         }
 
-        public async Task<ShortUrlResponse> GetOriginalUrl(string shortCode)
+        public async Task<ShortUrlResponse> GetOriginalUrl(string shortCode, string baseURl)
         {
             if (string.IsNullOrWhiteSpace(shortCode) || shortCode.Length != 6)
             {
@@ -106,17 +110,17 @@ namespace UrlShortener.Infrastructure.Services
                 throw new NotFoundException("Short URL not found");
             }
 
-            return CreateResponse(FoundShortUrl);
+            return CreateResponse(FoundShortUrl, baseURl);
         }
 
-        public async Task<List<ShortUrlResponse>> GetShortUrls(string userId)
+        public async Task<List<ShortUrlResponse>> GetShortUrls(string userId, string baseURl)
         {
             var shortUrls = await _repo.GetByUserIdAsync(userId);
             if (shortUrls == null || !shortUrls.Any())
             {
                 throw new NotFoundException("No short URLs found for the user");
             }
-            var responseList = shortUrls.Select(su => CreateResponse(su)
+            var responseList = shortUrls.Select(su => CreateResponse(su, baseURl)
                 ).ToList();
 
             return responseList;

@@ -10,14 +10,15 @@ namespace UrlShortener.Application.DTOs.response
 {
     public class ShortUrlResponse
     {
-        [Required]
         public string? ShortCode { get; set; }
 
-        [Required]
+        [Url]
+        public string? FullUrl {  get; set; }
+
         [Url]
         public string OriginalUrl { get; set; } = string.Empty;
 
-        [Required]
+
         public int Id { get; set; }
     
         public string? UserId { get; set; } 

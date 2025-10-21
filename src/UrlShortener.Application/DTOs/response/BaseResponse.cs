@@ -10,7 +10,7 @@ namespace UrlShortener.Application.DTOs.response
     {
         public int Status { get; set; }
         public string Message { get; set; }
-        public T? data { get; set; }
+        public T? Data { get; set; }
 
         public BaseResponse(int status, string message)
         {
@@ -20,7 +20,12 @@ namespace UrlShortener.Application.DTOs.response
 
         public BaseResponse(int status, string message, T data) : this(status, message)
         {
-            this.data = data;
+            this.Data = data;
+        }
+
+        public BaseResponse()
+        {
+            
         }
     }
 }

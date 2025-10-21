@@ -80,6 +80,9 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IShortUrlService, ShortUrlServiceImpl>();
 builder.Services.AddScoped<IShortUrlRepository, ShortUrlRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenServiceImpl>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

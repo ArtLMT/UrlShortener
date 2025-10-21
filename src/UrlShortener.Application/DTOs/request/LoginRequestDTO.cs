@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UrlShortener.Application.DTOs.request
 {
-    public class LoginRequest
+    public class LoginRequestDTO
     {
         /// <example>123@gmail.com</example>
         public string Email { get; set; }

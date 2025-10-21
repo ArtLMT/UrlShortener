@@ -13,5 +13,7 @@ namespace UrlShortener.Infrastructure.Identity.Entities
     {
         public UserStatus? Status { get; set; } = UserStatus.ACTIVE;
         public ICollection<ShortUrl> ShortUrls { get; set; } = new List<ShortUrl>();
+
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

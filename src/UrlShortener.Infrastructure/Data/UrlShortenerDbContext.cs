@@ -20,14 +20,37 @@ namespace UrlShortener.Infrastructure.Data
 
         }
 
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<ShortUrl> ShortUrls { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //// Nếu bạn dùng Fluent API tách riêng config:
-            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(UrlShortenerDbContext).Assembly)
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.ToTable(nameof(RefreshToken));
+                entity.HasKey(r => r.Id);
+
+                entity.Property(r => r.Id)
+                      .UseIdentityColumn(1, 1);
+
+                entity.Property(r => r.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(r => r.IsRevoked)
+                      .HasDefaultValue(false);
+
+                entity.HasOne(s => s.User)
+                      .WithMany()
+                      .HasForeignKey(s => s.UserId)
+                      .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasIndex(r => new { r.UserId, r.IsRevoked })
+                      .HasFilter("[IsRevoked] = 0")
+                      .IsUnique();
+            });
 
             modelBuilder.Entity<ShortUrl>(entity =>
             {
@@ -36,7 +59,7 @@ namespace UrlShortener.Infrastructure.Data
                 entity.HasKey(s => s.Id);
 
                 entity.Property(s => s.Id)
-                      .ValueGeneratedOnAdd();
+                      .UseIdentityColumn(seed: 1, increment: 1);
 
                 entity.Property(s => s.OriginalUrl)
                       .IsRequired()

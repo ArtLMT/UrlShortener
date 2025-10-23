@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -15,10 +16,12 @@ namespace UrlShortener.Infrastructure.Services
     public class RefreshTokenServiceImpl : IRefreshTokenService
     {
         private readonly IRefreshTokenRepository _repo;
+        private readonly ILogger<RefreshTokenServiceImpl> _logger;
 
-        public RefreshTokenServiceImpl(IRefreshTokenRepository repository)
+        public RefreshTokenServiceImpl(IRefreshTokenRepository repository, ILogger<RefreshTokenServiceImpl> logger)
         {
             _repo = repository;
+            _logger = logger;
         }
 
         public async Task<string> GenerateAndStoreAsync(ApplicationUser user)

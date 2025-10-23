@@ -39,6 +39,9 @@ namespace UrlShortener.Infrastructure.Data
                 entity.Property(r => r.CreatedAt)
                       .HasDefaultValueSql("GETUTCDATE()");
 
+                entity.Property(r => r.ExpiresAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
                 entity.Property(r => r.IsRevoked)
                       .HasDefaultValue(false);
 

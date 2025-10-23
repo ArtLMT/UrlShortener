@@ -52,6 +52,10 @@ namespace UrlShortener.Application.Services
                 throw new NotFoundException("User not found");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+            //await _signInManager.PasswordSignInAsync(user, request.Password, false, lockoutOnFailure: true);
+
+            //if (result.IsLockedOut)
+            //    throw new UnauthorizedException("Account locked");
             if (!result.Succeeded)
                 throw new UnauthorizedException("Invalid credentials");
 

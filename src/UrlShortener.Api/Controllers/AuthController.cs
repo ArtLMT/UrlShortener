@@ -14,12 +14,15 @@ namespace UrlShortener.Api.Controllers
         private readonly IIdentityService _identityService;
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly ITokenService _tokenService;
+        private readonly ILogger<AuthController> _logger;
+
         private const string RefreshTokenCookieName = "refreshToken";
-        public AuthController(IIdentityService identityService, IRefreshTokenService refreshTokenService, ITokenService tokenService)
+        public AuthController(IIdentityService identityService, IRefreshTokenService refreshTokenService, ITokenService tokenService, ILogger<AuthController> logger)
         {
             _identityService = identityService;
             _refreshTokenService = refreshTokenService;
             _tokenService = tokenService;
+            _logger = logger;
         }
         [HttpPost("register")]
         public async Task<ActionResult<BaseResponse<string>>> Register(RegisterRequestDTO request)
@@ -31,11 +34,17 @@ namespace UrlShortener.Api.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<BaseResponse<TokenResponse>>> Login(LoginRequestDTO request)
         {
+            _logger.LogInformation("Login start");
             var result = await _identityService.LoginAsync(request);
-            if (result.RefreshToken != null)
+            _logger.LogInformation("Login after service call");
+
+            if (!string.IsNullOrEmpty(result.RefreshToken))
             {
+                _logger.LogInformation("Setting cookie...");
                 SetRefreshTokenCookie(result.RefreshToken);
+                result.RefreshToken = string.Empty;
             }
+
             return Success(result, "Login successful");
         }
 
@@ -90,7 +99,7 @@ namespace UrlShortener.Api.Controllers
                 HttpOnly = true, // Quan trọng: Ngăn JavaScript truy cập
                 Expires = DateTime.UtcNow.AddDays(7), // Nên khớp với hạn dùng của refresh token
                 Secure = true,   // BẮT BUỘC: Chỉ gửi qua HTTPS
-                SameSite = SameSiteMode.Strict, // Tốt nhất: Chống tấn công CSRF
+                SameSite = SameSiteMode.None, // Tốt nhất: Chống tấn công CSRF
                 Path = "/api/v1/Auth" // Tùy chọn: Giới hạn cookie chỉ cho các endpoint xác thực
             };
             HttpContext.Response.Cookies.Append(RefreshTokenCookieName, token, cookieOptions);
@@ -104,7 +113,7 @@ namespace UrlShortener.Api.Controllers
                 HttpOnly = true,
                 Expires = DateTime.UtcNow.AddDays(-1),
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Path = "/api/v1/Auth"
             };
             HttpContext.Response.Cookies.Append(RefreshTokenCookieName, string.Empty, cookieOptions);

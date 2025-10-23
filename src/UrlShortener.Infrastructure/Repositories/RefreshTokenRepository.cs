@@ -45,7 +45,9 @@ namespace UrlShortener.Infrastructure.Repositories
         }
 
         public async Task<RefreshToken?> GetByTokenAsync(string token)
-            => await _context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == token);
+            => await _context.RefreshTokens
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(t => t.Token == token);
 
         public async Task<IEnumerable<RefreshToken>> GetByUserIdAsync(string userId)
             => await _context.RefreshTokens.Where(t => t.UserId == userId).ToListAsync();

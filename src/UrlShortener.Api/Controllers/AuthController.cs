@@ -68,6 +68,7 @@ namespace UrlShortener.Api.Controllers
             }
 
             var storedToken = await _refreshTokenService.GetByTokenAsync(refreshToken);
+            _logger.LogInformation("{} ", storedToken.Token);
             if (storedToken == null || storedToken.User == null)
             {
                 ClearRefreshTokenCookie();

@@ -49,8 +49,12 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(
+            "http://localhost:3000", // FE dev (Vite)
+            "https://9d3h268z-3000.asse.devtunnels.ms" 
+        )
               .AllowAnyHeader()
+              .AllowCredentials()
               .AllowAnyMethod();
     });
 });

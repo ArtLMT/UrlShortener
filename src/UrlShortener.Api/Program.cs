@@ -15,7 +15,8 @@ using UrlShortener.Infrastructure.Data;
 using UrlShortener.Infrastructure.Identity.Entities;
 using UrlShortener.Infrastructure.Repositories;
 using UrlShortener.Infrastructure.Services;
-
+using FluentValidation;
+using UrlShortener.Application.DTOs.request;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -88,6 +89,8 @@ builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenServiceImpl>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddControllers();
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestDTO>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -141,7 +144,7 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 app.UseCors("AllowAll");
 app.UseMiddleware<GlobalExceptionMiddleware>();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

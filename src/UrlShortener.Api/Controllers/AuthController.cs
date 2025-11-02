@@ -101,7 +101,8 @@ namespace UrlShortener.Api.Controllers
                 Expires = DateTime.UtcNow.AddDays(7), // Nên khớp với hạn dùng của refresh token
                 Secure = true,   // BẮT BUỘC: Chỉ gửi qua HTTPS
                 SameSite = SameSiteMode.None, // Tốt nhất: Chống tấn công CSRF
-                Path = "/api/v1/Auth" // Tùy chọn: Giới hạn cookie chỉ cho các endpoint xác thực
+                Path = "/api/v1/Auth", // Tùy chọn: Giới hạn cookie chỉ cho các endpoint xác thực
+                MaxAge = TimeSpan.FromDays(7)
             };
             HttpContext.Response.Cookies.Append(RefreshTokenCookieName, token, cookieOptions);
         }
@@ -115,7 +116,8 @@ namespace UrlShortener.Api.Controllers
                 Expires = DateTime.UtcNow.AddDays(-1),
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Path = "/api/v1/Auth"
+                Path = "/api/v1/Auth",
+                MaxAge = TimeSpan.Zero
             };
             HttpContext.Response.Cookies.Append(RefreshTokenCookieName, string.Empty, cookieOptions);
         }

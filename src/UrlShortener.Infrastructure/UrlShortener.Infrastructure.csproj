@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Migrations\" />
+    <Compile Remove="Data\Migration_Postgre\**" />
+    <EmbeddedResource Remove="Data\Migration_Postgre\**" />
+    <None Remove="Data\Migration_Postgre\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Cache\" />
   </ItemGroup>
 
@@ -20,6 +25,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>

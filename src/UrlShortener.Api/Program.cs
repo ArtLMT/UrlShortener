@@ -52,7 +52,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
             "http://localhost:3000", // FE dev (Vite)
-            "https://9d3h268z-3000.asse.devtunnels.ms" 
+            "https://9d3h268z-3000.asse.devtunnels.ms",
+            "https://kaka1409.github.io"
         )
               .AllowAnyHeader()
               .AllowCredentials()

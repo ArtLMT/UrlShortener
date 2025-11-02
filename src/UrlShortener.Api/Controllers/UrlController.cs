@@ -20,7 +20,7 @@ namespace UrlShortener.Api.Controllers
         private string GetBaseUrl()
         {
             var request = HttpContext.Request;
-            return $"{request.Scheme}://{request.Host}";
+            return $"{request.Scheme}s://{request.Host}";
         }
 
         public UrlController(IShortUrlService shortUrlService)

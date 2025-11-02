@@ -13,6 +13,7 @@ services:
     networks:
       - app_network
   api:
+    image: twinthang44/urlshortener_api:latest
     build:
       context: .
       dockerfile: src/UrlShortener.Api/Dockerfile

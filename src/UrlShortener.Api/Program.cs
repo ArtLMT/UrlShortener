@@ -91,7 +91,7 @@ builder.Services.AddScoped<IRefreshTokenService, RefreshTokenServiceImpl>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddControllers();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestDTO>();
-
+builder.Services.AddValidatorsFromAssemblyContaining<ShortUrlRequest>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {

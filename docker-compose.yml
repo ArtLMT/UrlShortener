@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: urlshortener_db
+    environment:
+      SA_PASSWORD: "gr33nWichUrlshort3ner@!23"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - db_data:/var/opt/mssql
+    networks:
+      - app_network
+  api:
+    image: twinthang44/urlshortener_api:latest
+    build:
+      context: .
+      dockerfile: src/UrlShortener.Api/Dockerfile
+    container_name: urlshortener_api
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=db;Database=UrlShortener;User Id=sa;Password=gr33nWichUrlshort3ner@!23;TrustServerCertificate=True;
+    networks:
+      - app_network
+
+volumes:
+  db_data:
+
+networks:
+  app_network:

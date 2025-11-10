@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  api:
+    image: twinthang44/urlshortener_api:latest
+    build:
+      context: .
+      dockerfile: src/UrlShortener.Api/Dockerfile
+    container_name: urlshortener_api
+    ports:
+      - "80:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server="Host=dpg-d43em92li9vc73cucgbg-a;Port=5432;Database=phamthang;Username=phamthang_user;Password=EWBwfNokLKxMz0T5CZ1xNsQboINBaIOX;Trust Server Certificate=true;"
+    networks:
+      - app_network
+
+networks:
+  app_network:

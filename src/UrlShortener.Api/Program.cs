@@ -92,6 +92,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddControllers();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestDTO>();
 builder.Services.AddValidatorsFromAssemblyContaining<ShortUrlRequest>();
+builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestDTO>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
